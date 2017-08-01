@@ -10,14 +10,68 @@
 		<script type="text/javascript">
 			/*
 			 * 稍有不同的是 js的toFixed在保留位数不够的情况下会自动补零
+			 * 因此加了第三个参数，是佛补零，默认是补零的--
 			 */
-			function toFixed(num, s) {
-				var times = Math.pow(10, s)
-				var des = num * times + 0.5
-				des = parseInt(des, 10) / times
-				return des + ''
+			function toFixed(num,s,f) {
+				var ff = typeof(f)=="undefined"?true:f;
+				var times = Math.pow(10, s);
+				var des = num * times + (num >=0?0.5:-0.5);
+				des = parseInt(des, 10) / times;
+				des += '';
+				if(ff){
+					if(des.indexOf(".")==-1){
+						for(var i = 0;i<s;i++){
+							if(i = 0) des+=".";
+							des+="0";
+						}
+					}else{
+						var dotPos = des.indexOf('.')
+						var len = des.substr(dotPos + 1).length
+						if(len < s){
+							for(var i = 0;i<s-len;i++){
+								des+="0";
+							}
+						}
+					}
+					return des;
+				}else{
+					return des;
+				}
 			}
-			console.log(toFixed(3.1,4))
+			
+			
+			console.log(toFixed("-3.14324",7))
+			
+			
+			/*
+			 * 完整版toFixed
+			 */
+			Number.prototype.toFixed=function (d) { 
+                var s=this+""; 
+                if(!d)d=0; 
+                if(s.indexOf(".")==-1)s+="."; 
+                s+=new Array(d+1).join("0"); 
+                if(new RegExp("^(-|\\+)?(\\d+(\\.\\d{0,"+(d+1)+"})?)\\d*$").test(s)){
+                    var s="0"+RegExp.$2,pm=RegExp.$1,a=RegExp.$3.length,b=true;
+                    if(a==d+2){
+                        a=s.match(/\d/g); 
+                        if(parseInt(a[a.length-1])>4){
+                            for(var i=a.length-2;i>=0;i--){
+                                a[i]=parseInt(a[i])+1;
+                                if(a[i]==10){
+                                    a[i]=0;
+                                    b=i!=1;
+                                }else break;
+                            }
+                        }
+                        s=a.join("").replace(new RegExp("(\\d+)(\\d{"+d+"})\\d$"),"$1.$2");
+ 
+                    }if(b)s=s.substr(1); 
+                    return (pm+s).replace(/\.$/,"");
+                }return this+"";
+ 
+            };
+            console.log(-123.12.toFixed(7))
 		</script>
 	</body>
 
