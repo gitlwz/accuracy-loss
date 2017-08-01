@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			/*
+			 * 稍有不同的是 js的toFixed在保留位数不够的情况下会自动补零
+			 */
+			function toFixed(num, s) {
+				var times = Math.pow(10, s)
+				var des = num * times + 0.5
+				des = parseInt(des, 10) / times
+				return des + ''
+			}
+			console.log(toFixed(3.1,4))
+		</script>
+	</body>
+
+</html>
